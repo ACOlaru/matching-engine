@@ -10,13 +10,13 @@ public class Trade {
     private final int quantity;
     private final Instant timestamp;
 
-    public Trade(String buyOrderId, String sellOrderId, String symbol, double price, int quantity, Instant timestamp) {
+    public Trade(String buyOrderId, String sellOrderId, String symbol, double price, int quantity) {
         this.buyOrderId = buyOrderId;
         this.sellOrderId = sellOrderId;
         this.symbol = symbol;
         this.price = price;
         this.quantity = quantity;
-        this.timestamp = timestamp;
+        this.timestamp = Instant.now();
     }
 
     public String getBuyOrderId() {
