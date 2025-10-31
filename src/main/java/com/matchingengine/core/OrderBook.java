@@ -6,19 +6,13 @@ import com.matchingengine.model.Side;
 import java.util.*;
 
 public class OrderBook {
-    private final String symbol;
-
     // BUY side: highest price first
     private final NavigableMap<Double, Queue<Order>> bids = new TreeMap<>(Comparator.reverseOrder());
 
     // SELL side: lowest price first
     private final NavigableMap<Double, Queue<Order>> asks = new TreeMap<>();
 
-    public OrderBook(String symbol) {
-        this.symbol = symbol;
-    }
-
-    public void addOrder(Order order) {
+    public void add(Order order) {
         NavigableMap<Double, Queue<Order>> bookSide =
                 (order.getSide() == Side.BUY) ? bids : asks;
 
@@ -45,8 +39,7 @@ public class OrderBook {
     @Override
     public String toString() {
         return "OrderBook{" +
-                "symbol='" + symbol + '\'' +
-                ", bestBid=" + getBestBid().orElse(null) +
+                " bestBid=" + getBestBid().orElse(null) +
                 ", bestAsk=" + getBestAsk().orElse(null) +
                 '}';
     }

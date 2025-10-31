@@ -42,5 +42,17 @@ public class Trade {
     public Instant getTimestamp() {
         return timestamp;
     }
+
+    @Override
+    public String toString() {
+        return "Trade{" +
+                "buyOrderId='" + buyOrderId + '\'' +
+                ", sellOrderId='" + sellOrderId + '\'' +
+                ", symbol='" + symbol + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }
 

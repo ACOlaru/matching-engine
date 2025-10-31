@@ -19,41 +19,50 @@ public class FifoMatchingStrategy implements MatchingStrategy {
     }
 
     private List<Trade> matchSell(Order incomingOrder, OrderBook orderBook) {
-        List<Trade> trades = new ArrayList<>();
+        NavigableMap<Double, Queue<Order>> bids = orderBook.getBids();
+        return matchOrder(incomingOrder, bids, incomingOrder.getSide());
+    }
 
-       NavigableMap<Double, Queue<Order>> asks = orderBook.getAsks();
-       Iterator<Map.Entry<Double, Queue<Order>>> it = asks.entrySet().iterator();
+    private List<Trade> matchBuy(Order incomingOrder, OrderBook orderBook) {
+        NavigableMap<Double, Queue<Order>> asks = orderBook.getAsks();
+        return matchOrder(incomingOrder, asks, incomingOrder.getSide());
+    }
+
+    private static List<Trade> matchOrder(Order incomingOrder, NavigableMap<Double, Queue<Order>> entries,  Side side) {
+        List<Trade> trades = new ArrayList<>();
+        Iterator<Map.Entry<Double, Queue<Order>>> it = entries.entrySet().iterator();
 
         while (it.hasNext() && incomingOrder.getQuantity() > 0) {
             Map.Entry<Double, Queue<Order>> entry = it.next();
-            double askPrice = entry.getKey();
+            double priceLevelPrice = entry.getKey();
 
-            if (askPrice > incomingOrder.getPrice()) {
-                break; //Price larger than what it is willing to pay
+            if (side == Side.BUY && priceLevelPrice > incomingOrder.getPrice()) break;
+            if (side == Side.SELL && priceLevelPrice < incomingOrder.getPrice()) break;
+
+            Queue<Order> orders = entry.getValue();
+
+            while(!orders.isEmpty() && incomingOrder.getQuantity() > 0) {
+                Order restingOrder = orders.peek();
+                int tradeQuantity = Math.min(incomingOrder.getQuantity(), restingOrder.getQuantity());
+                double tradePrice = restingOrder.getPrice();
+
+                String buyerId = (side == Side.BUY) ? incomingOrder.getId() : restingOrder.getId();
+                String sellerId = (side == Side.SELL) ? incomingOrder.getId() : restingOrder.getId();
+                trades.add(new Trade(buyerId, sellerId, incomingOrder.getSymbol(), tradePrice, tradeQuantity));
+
+                incomingOrder.reduceQuantity(tradeQuantity);
+                restingOrder.reduceQuantity(tradeQuantity);
+
+                if (restingOrder.isFilled()) {
+                    orders.poll();
+                }
             }
 
-            Queue<Order> sellOrders = entry.getValue();
-
-            while(!sellOrders.isEmpty() && incomingOrder.getQuantity() > 0) {
-                Order sellOrder = sellOrders.peek();
-                int tradeQuantity = Math.min(incomingOrder.getQuantity(), sellOrder.getQuantity());
-                double tradePrice = sellOrder.getPrice(); // price = resting order’s price
-
-                trades.add(new Trade(incomingOrder.getId(), sellOrder.getId(), incomingOrder.getSymbol(), tradePrice, tradeQuantity));
-
-                incomingOrder.reduceQuantity(tradeQty);
-                sellOrder.reduceQuantity(tradeQty);
-
-                if (sellOrder.getQuantity() == 0) {
-                    sellOrders.poll();
-                }
+            if (orders.isEmpty()) {
+                it.remove();
             }
         }
 
         return trades;
-    }
-
-    private List<Trade> matchBuy(Order incomingOrder, OrderBook orderBook) {
-
     }
 }

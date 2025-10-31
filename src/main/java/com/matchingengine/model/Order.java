@@ -8,7 +8,7 @@ public class Order {
     private final String symbol;
     private final Side side;
     private final double price;
-    private final int quantity;
+    private int quantity;
     private final Instant timestamp;
 
 
@@ -44,6 +44,28 @@ public class Order {
 
     public Instant getTimestamp() {
         return timestamp;
+    }
+
+    public void reduceQuantity(int tradeQuantity) {
+        if (tradeQuantity > 0 && tradeQuantity <= quantity) {
+            quantity -= tradeQuantity;
+        }
+    }
+
+    public boolean isFilled() {
+        return quantity == 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id='" + id + '\'' +
+                ", symbol='" + symbol + '\'' +
+                ", side=" + side +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                ", timestamp=" + timestamp +
+                '}';
     }
 
     public static class Builder {
