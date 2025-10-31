@@ -44,35 +44,4 @@ public class MatchingEngineSimulation {
             System.out.println(trade.toString());
         }
     }
-
-    private static List<Order> getHardCodedValues() {
-        Order order1 = new Order.Builder()
-                .symbol("AAPL")
-                .side(Side.BUY)
-                .price(100.0)
-                .quantity(10)
-                .build();
-        Order order2 = new Order.Builder()
-                .symbol("AAPL")
-                .side(Side.BUY)
-                .price(102.0)
-                .quantity(10)
-                .build();
-        Order order3 = new Order.Builder()
-                .symbol("AAPL")
-                .side(Side.SELL)
-                .price(102.0)
-                .quantity(8)
-                .build();
-        Order order4 = new Order.Builder()
-                .symbol("AAPL")
-                .side(Side.SELL)
-                .price(101.0)
-                .quantity(5)
-                .build();
-
-
-        return new ArrayList<>(List.of(order1, order2, order3, order4));
-    }
-
 }
