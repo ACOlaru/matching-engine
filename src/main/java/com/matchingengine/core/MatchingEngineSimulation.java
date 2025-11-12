@@ -19,23 +19,15 @@ public class MatchingEngineSimulation {
 
         MatchingStrategy strategy = new FifoMatchingStrategy();
         MatchingEngine engine = new MatchingEngine(strategy);
+        OrderDispatcher dispatcher = new OrderDispatcher(engine);
+        dispatcher.start();
+
         Reader reader = new CsvOrderReader();
         List<Order> orders = reader.loadOrders(filepath);
 
         for (Order order : orders) {
-            System.out.println("Submitting order" + order.toString());
+            dispatcher.submitOrder(order);
 
-            List<Trade> trades = engine.processOrder(order);
-
-            if (!trades.isEmpty()) {
-                System.out.println("Trades not empty");
-                printTrades(trades);
-            } else {
-                System.out.println("No trades found");
-            }
-
-            System.out.println(engine.getOrderBook().toString());
-            System.out.println("-----------------------------------------");
         }
     }
 

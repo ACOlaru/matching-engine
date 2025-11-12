@@ -5,13 +5,17 @@ import com.matchingengine.model.Trade;
 import com.matchingengine.pattern.strategy.MatchingStrategy;
 
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MatchingEngine {
-    private OrderBook orderBook;
-    private MatchingStrategy matchingStrategy;
+
+    private final OrderBook orderBook;
+    private final MatchingStrategy matchingStrategy;
+    private final Lock lock = new ReentrantLock(); // optional concurrency safety
 
     public MatchingEngine(MatchingStrategy matchingStrategy) {
-        orderBook = new OrderBook();
+        this.orderBook = new OrderBook();
         this.matchingStrategy = matchingStrategy;
     }
 
@@ -24,12 +28,17 @@ public class MatchingEngine {
     }
 
     public List<Trade> processOrder(Order order) {
-        List<Trade> trades = matchingStrategy.match(order, orderBook);
+        lock.lock();
+        try {
+            List<Trade> trades = matchingStrategy.match(order, orderBook);
 
-        if (!order.isFilled()) {
-            orderBook.add(order);
+            if (!order.isFilled()) {
+                orderBook.add(order);
+            }
+
+            return trades;
+        } finally {
+            lock.unlock();
         }
-
-        return trades;
     }
 }
