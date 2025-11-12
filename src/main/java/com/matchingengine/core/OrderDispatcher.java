@@ -27,7 +27,7 @@ public class OrderDispatcher {
 
                     if (!trades.isEmpty()) {
                         System.out.println("Trades executed:");
-                        trades.forEach(System.out::println);
+                        printTrades(trades);
                     } else {
                         System.out.println("No trades found");
                     }
@@ -41,6 +41,13 @@ public class OrderDispatcher {
             }
         });
     }
+
+    private static void printTrades(List<Trade> trades) {
+        for (Trade trade : trades) {
+            System.out.println(trade.toString());
+        }
+    }
+
     public void submitOrder(Order order) {
         queue.offer(order);
     }

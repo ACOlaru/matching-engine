@@ -28,10 +28,4 @@ public class MatchingEngineSimulation {
 
         }
     }
-
-    private static void printTrades(List<Trade> trades) {
-        for (Trade trade : trades) {
-            System.out.println(trade.toString());
-        }
-    }
 }
