@@ -3,12 +3,10 @@ package com.matchingengine.core;
 import com.matchingengine.io.CsvOrderReader;
 import com.matchingengine.io.Reader;
 import com.matchingengine.model.Order;
-import com.matchingengine.model.Side;
 import com.matchingengine.model.Trade;
 import com.matchingengine.pattern.strategy.FifoMatchingStrategy;
 import com.matchingengine.pattern.strategy.MatchingStrategy;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MatchingEngineSimulation {

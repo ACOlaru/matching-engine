@@ -20,7 +20,7 @@ public class OrderDispatcher {
         executor.submit(() -> {
             while (running) {
                 try {
-                    Order order = queue.take(); // wait for an order
+                    Order order = queue.take();
                     List<Trade> trades = engine.processOrder(order);
 
                     System.out.println("Processing order: " + order);

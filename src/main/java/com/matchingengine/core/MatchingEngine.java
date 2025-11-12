@@ -12,7 +12,7 @@ public class MatchingEngine {
 
     private final OrderBook orderBook;
     private final MatchingStrategy matchingStrategy;
-    private final Lock lock = new ReentrantLock(); // optional concurrency safety
+    private final Lock lock = new ReentrantLock();
 
     public MatchingEngine(MatchingStrategy matchingStrategy) {
         this.orderBook = new OrderBook();
