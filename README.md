@@ -1,53 +1,52 @@
-# Matching engine
+# Matching Engine
 
-A lightweight Java implementation of a limit order book and trade matching engine.  
-The system processes limit orders, maintains bid/ask books, and executes trades using price-time (FIFO) priority.  
-It is designed to demonstrate the core principles behind exchange-level matching, data structure design, and modular software architecture.
+A lightweight Java implementation of a **limit order book** and trade matching engine.  
+The engine processes **limit orders**, maintains **bid/ask books**, and executes trades using **price-time (FIFO) priority**.  
+It is designed to demonstrate core principles of **exchange-level matching**, **data structure design**, and **modular software architecture**.
 
 ---
 
 ## Overview
 
-The engine maintains an in-memory order book and matches incoming orders based on configurable strategies.  
-It separates core concerns: order management, trade generation, and strategy execution.  
+- Maintains an **in-memory order book** for multiple symbols.
+- Matches incoming orders based on **configurable strategies**.
+- Supports **asynchronous order submission** via a **multi-threaded dispatcher**, allowing concurrent intake while preserving deterministic matching.
+- Separates core concerns:
+    - Order management
+    - Trade generation
+    - Matching strategy execution
 
 ---
 
 ## Features
 
-- Matching based on price-time (FIFO) priority
-- Independent bid/ask books with efficient lookups
-- Trade generation and order book state updates
-- Strategy interface for pluggable matching logic
-- CSV-based order simulation
+- **FIFO matching** based on price-time priority
+- Independent **bid/ask books** with efficient lookups
+- **Trade generation** and order book state updates
+- **Pluggable matching strategies** via Strategy Pattern
+- **Multi-threaded order intake** using a producer-consumer pattern
+- **CSV-based simulation** for reproducible testing
 
 ---
 
 ## Design
 
-- **Strategy Pattern** — encapsulates matching algorithms and allows extension (e.g. Pro-Rata, Price-Time).
-- **Builder Pattern** — clean and immutable `Order` creation.
-- **TreeMap / Queue** — ordered price levels with FIFO queues per price.
-- **Separation of Concerns** — I/O, model, and matching logic are fully decoupled.
+- **Strategy Pattern** — encapsulates matching algorithms (e.g., FIFO, Pro-Rata)
+- **Builder Pattern** — clean, immutable `Order` creation
+- **TreeMap + Queue** — ordered price levels with FIFO queues per price
+- **Separation of Concerns** — I/O, model, and matching logic decoupled
+- **Producer–Consumer Dispatcher** — single-threaded engine processes orders asynchronously from multiple producer threads
 
 ---
 
-## Input Format
-
-The format of the input can be seen in `src/main/resources/orders.csv`
-
----
 ## Technical Notes
 
-- Language: Java
-
-- Build: Maven
-
-- Complexity: O(log n) price-level access via TreeMap
-
-- Execution Order: FIFO via LinkedList queues
-
-- Extensibility: strategy-driven and stateless core design
+- **Language:** Java
+- **Build:** Maven
+- **Complexity:** O(log n) per price-level access via `TreeMap`
+- **Execution Order:** FIFO via `LinkedList` queues
+- **Extensibility:** Strategy-driven and stateless core design
+- **Concurrency:** Thread-safe intake using `BlockingQueue` and single-threaded processing for deterministic matching
 
 ---
 
@@ -56,4 +55,10 @@ The format of the input can be seen in `src/main/resources/orders.csv`
 - Market and cancel order support
 - Additional matching algorithms
 - Persistent order state and logging
-- Thread-safe matching for concurrent order flow
+- Enhanced multi-threading with per-symbol dispatchers for higher throughput
+
+---
+
+## Author
+
+Alexandra Olaru – Software Engineer
